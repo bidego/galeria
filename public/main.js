@@ -6,7 +6,7 @@ function mainController($scope, $http) {
     //Cuando se cargue la pagina, pide las galerias de mongodb a la api
     $http.get('/api/galerias')
         .success( data => {
-            $scope.todos = data
+            $scope.galerias = data
             console.log(data)
         })
         .error( data => {
@@ -28,7 +28,7 @@ function mainController($scope, $http) {
 
     //Borramos una galeria a través de la api
     $scope.deleteGaleria = id => {
-        $http.delete('/api/galerias' + id)
+        $http.delete('/api/galerias/' + id)
             .success( data => {
                 $scope.galerias = data
                 console.log(data)

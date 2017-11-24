@@ -16,22 +16,6 @@ var nameSchema = new mongoose.Schema({
 
 var Galeria = mongoose.model('galeria', nameSchema);
 
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/galeria.html")
-})
-
-app.post("/addname", (req, res) => {
- var myData = new Galeria(req.body)
- myData.save()
- .then(item => {
-    res.sendFile(__dirname + "/galeria.html")
- })
- .catch(err => {
-  res.status(400).send('unable to save to db')
- })
-})
-
-
 //Definimos modelos.
 var User = mongoose.model('Galeria', nameSchema)
 
@@ -45,18 +29,6 @@ app.get('/api/galerias', function(req, res) {
 		res.json(galerias);
 	});
 });
-
-/*
-app.post('/api/galerias', function(req, res) {				        
-    var myData = new Galeria(req.body)
-    myData.save()
-    .then(item => {
-    res.sendFile(__dirname + "/galeria.html")
-    })
-    .catch(err => {
-    res.status(400).send('unable to save to db')
-    })
-})*/
 
 // POST que crea una GALERIA y devuelve todos tras la creación
 app.post('/api/galerias', function(req, res) {				
@@ -99,7 +71,7 @@ app.delete('/api/galerias/:galeria', function(req, res) {
 // Carga una vista HTML simple donde irá nuestra Single App Page
 // Angular Manejará el Frontend
 app.get('*', function(req, res) {						
-	res.sendfile('./public/galeria.html');				
+	res.sendFile(__dirname+'/public/galeria.html');				
 });
 
 
