@@ -16,17 +16,19 @@
 
         <div class="checkbox" ng-repeat="galeria in galerias">
             <label>
-                {{galeria.firstName}}<input type="checkbox" ng-click="deleteGaleria(galeria._id)"> {{ galeria.text }}
+                {{galeria.name}}<input type="checkbox" ng-click="deleteGaleria(galeria._id)" />{{galeria.description + " " + galeria._id}}
             </label>
         </div>
         <form>
             <div class="form-group">
-                <input type="text" class="form-controll input-lg text-center" placeholder="Ingresa un nuevo nombre para tu nueva galeria" ng-model="formData.text">
-            </div>
+                    <input type="text" class="form-controll input-lg text-center" placeholder="Ingrese nombre de galeria." ng-model="formData.name">
+                    <input type="text" class="form-controll input-lg text-center" placeholder="Ingrese descripción de la galeria." ng-model="formData.description">
+                </div>
             <button class="btn btn-primary btn-lg" ng-click="createGaleria()">
                 Agregar
             </button>
         </form>
+        
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
     <script>
@@ -57,12 +59,22 @@ function mainController($scope, $http) {
                 console.log('Error : ' + data)
             })
     }
-
+/*
+    //Agregar foto a galeria
+    $scope.addPhotoToGaleria = galeriaId => {
+        $http.get('/addPhoto')
+        .success( data => {
+            $scope.formAddPhoto = data
+            console.log(data)
+        })
+    }
+*/
     //Borramos una galeria a través de la api
     $scope.deleteGaleria = id => {
         $http.delete('/api/galerias/' + id)
             .success( data => {
                 $scope.galerias = data
+                $scope.formAddPhoto = data
                 console.log(data)
             })
             .error( data => {
