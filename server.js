@@ -90,6 +90,10 @@ app.delete('/api/galerias/:galeria', (req, res) => {
 // Carga una vista HTML simple donde irá nuestra Single App Page
 // Angular Manejará el Frontend
 
+app.get('/addPhoto', (req, res) => {						
+	res.sendFile(__dirname+'/public/addPhoto.html');
+});
+
 app.get('*', (req, res) => {						
 	res.sendFile(__dirname+'/public/galeria.html');				
 });
