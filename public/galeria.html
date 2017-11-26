@@ -28,6 +28,14 @@
                 Agregar
             </button>
         </form>
+
+        <form ng-controller="addPhotoToGaleria">
+            <div class="form-group">
+                <label for="photo">Photo</label>
+                <input type="file" id="photoInputFile" file-model="customer.file">
+            </div>
+            <button type="submit" class="btn btn-default" ng-click="addPhotoToGaleria()">Submit</button>
+        </form>
         
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
@@ -60,6 +68,13 @@ function mainController($scope, $http) {
             })
     }
 /*
+    var socket = io()
+    socket.on('connect', () => {
+        socket.emit('ferret', 'tobi', data => {
+            console.log(data)
+        })
+    })*/
+
     //Agregar foto a galeria
     $scope.addPhotoToGaleria = galeriaId => {
         $http.get('/addPhoto')
@@ -68,13 +83,12 @@ function mainController($scope, $http) {
             console.log(data)
         })
     }
-*/
+
     //Borramos una galeria a través de la api
     $scope.deleteGaleria = id => {
         $http.delete('/api/galerias/' + id)
             .success( data => {
                 $scope.galerias = data
-                $scope.formAddPhoto = data
                 console.log(data)
             })
             .error( data => {

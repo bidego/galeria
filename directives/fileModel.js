@@ -10,7 +10,7 @@ app.directive('fileModel', ['$parse', function($parse) {
                 scope.$apply(function() {
                     modelSetter(scope, lement[0].files[0]);
                 })
-            }
+            })$scope.customer.file
         }
     }
 }])

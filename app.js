@@ -1,8 +1,11 @@
 var express = require('express')
 var mongoose = require('mongoose')
+
 mongoose.Promise = global.Promise;mongoose.connect('mongodb://localhost:27017/galeria')
 
 var app = express()
+var server = require('http').Server(app);
+var io = require('socket.io')(server)
 var port = 3000
 
 var bodyParser = require('body-parser')
@@ -11,7 +14,7 @@ var bodyParser = require('body-parser')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended:true}))
-app.use(express.static(__dirname + '/'))
+app.use(express.static(__dirname + '/public'))
 
 //app.use(multer({dest: './uploads/'}))
 
@@ -30,8 +33,8 @@ var Galeria = mongoose.model('galeria', nameSchema);
 
 // Rutas de nuestro API
 // GET de todos las GALERIAs
-app.get('/api/galerias', function(req, res) {				
-	Galeria.find(function(err, galerias) {
+app.get('/api/galerias', (req, res) => {
+	Galeria.find( (err, galerias) => {
 		if(err) {
 			res.send(err);
 		}
@@ -40,17 +43,17 @@ app.get('/api/galerias', function(req, res) {
 });
 
 // POST que crea una GALERIA y devuelve todos tras la creación
-app.post('/api/galerias', function(req, res) {				
+app.post('/api/galerias', (req, res) => {
 	Galeria.create({
         name: req.body.name,
         description: req.body.description,
 		done: false
-	}, function(err, todo){
+	}, (err, galeria) => {
 		if(err) {
 			res.send(err);
 		}
 
-		Galeria.find(function(err, galerias) {
+		Galeria.find( (err, galerias) => {
 			if(err){
 				res.send(err);
 			}
@@ -58,23 +61,23 @@ app.post('/api/galerias', function(req, res) {
 		});
 	});
 });
-/*
+
 app.post('/upload', (req,res) => {
     console.log(req.body)
     console.log(req.files)
     res.json({success: true})
 })
-*/
+
 // DELETE un TODO específico y devuelve todos tras borrarlo.
-app.delete('/api/galerias/:galeria', function(req, res) {		
+app.delete('/api/galerias/:galeria', (req, res) => {		
 	Galeria.remove({
 		_id: req.params.galeria
-	}, function(err, galeria) {
+	}, (err, galeria) => {
 		if(err){
 			res.send(err);
 		}
 
-		Galeria.find(function(err, galerias) {
+		Galeria.find( (err, galerias) => {
 			if(err){
 				res.send(err);
 			}
@@ -83,16 +86,24 @@ app.delete('/api/galerias/:galeria', function(req, res) {
 
 	})
 });
-/*
-app.get('/addPhoto', function(req, res) {						
-	res.sendFile(__dirname+'/public/addPhoto.html');
-});
-*/
+
 // Carga una vista HTML simple donde irá nuestra Single App Page
 // Angular Manejará el Frontend
 
-app.get('*', function(req, res) {						
+app.get('*', (req, res) => {						
 	res.sendFile(__dirname+'/public/galeria.html');				
+});
+
+io.on('connection', socket => {
+    console.log("new connection")
+
+    socket.on('my other event', (data) => {
+        io.emit('notif', {
+            message: 'new event',
+            event: event
+        })
+        console.log(data);
+    })
 });
 
 app.listen(port, () => {
