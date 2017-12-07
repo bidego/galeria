@@ -9,97 +9,44 @@
     <div class="container"></div>
         <!-- Canecera -->
         <div class="jumbotron text-center">
-            <h1>Galeria <span class="label label-info">{{galerias.length}}</span></h1>
+            <h1>Galeria</h1>
+            <h3>{{galerias.length}} secciones</h3>
         </div>
 
         <!-- Lista de galerias -->
 
         <div class="checkbox" ng-repeat="galeria in galerias">
             <label>
-                {{galeria.name}}<input type="checkbox" ng-click="deleteGaleria(galeria._id)" />{{galeria.description + " " + galeria._id}}
+                <a href="#" ng-click="showDetails(galeria._id)">{{galeria.name}}</a> (Eliminar? <input type="checkbox" ng-click="deleteGaleria(galeria._id)" />)
             </label>
-            <button class="btn btn-primary btn-lg" ng-click="goToGaleria(galeria._id)">
-                    Agregar Foto
-            </button>
     
         </div>
         <form>
             <div class="form-group">
-                    <input type="text" class="form-controll input-lg text-center" placeholder="Ingrese nombre de galeria." ng-model="formData.name">
-                    <input type="text" class="form-controll input-lg text-center" placeholder="Ingrese descripción de la galeria." ng-model="formData.description">
-                </div>
+                <input type="text" class="form-controll input-lg text-center" placeholder="Ingrese nombre de galeria." ng-model="formData.name">
+                <input type="text" class="form-controll input-lg text-center" placeholder="Ingrese descripción de la galeria." ng-model="formData.description">
+            </div>
             <button class="btn btn-primary btn-lg" ng-click="createGaleria()">
                 Agregar
             </button>
         </form>
 
-        <div ng-bind-html="details">
-        </div>
-        
+        <h2 ng-bind="details[0].name"></h2>
+        <h3 ng-bind="details[0].description"></h3>
+        <form ng-submit="addPhotoToGaleria(details[0]._id)" method="post">
+            <img ng-src="{{data}}"/>
+            <label>Seleccionar una foto para subir
+                <input ng-model="galeriaData.filenew" name="filenew" type="file"></input>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Agregar Foto
+                </button>
+            </label>
+            </form>
+        </label>
     </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><script ng-src="node_modules/angular-sanitize/angular-sanitize.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><script ng-src="../node_modules/angular-sanitize/angular-sanitize.js"></script><script src="/public/main.js"></script>
     <script>
-angular.module('angularGaleria', [])
 
-function addPhotoToGaleria($scope, $http) {
-    $http.get('/addPhoto')
-        .success( data => {
-            $scope.formAddPhoto = data
-            console.log(data)
-        })
-}
-function mainController($scope, $http) {
-    $scope.formData = {}
-
-    //Cuando se cargue la pagina, pide las galerias de mongodb a la api
-    $http.get('/api/galerias')
-        .success( data => {
-            $scope.galerias = data
-            console.log(data)
-        })
-        .error( data => {
-            console.log('Error: ' + data)
-        })
-    
-    //Enviamos el texto a la api al añadir nueva galeria.
-    $scope.createGaleria = () => {
-        $http.post('/api/galerias', $scope.formData)
-            .success( data => {
-                $scope.formData = {}
-                $scope.galerias = data
-                console.log(data)
-            })
-            .error( data => {
-                console.log('Error : ' + data)
-            })
-    }
-/*
-    var socket = io()
-    socket.on('connect', () => {
-        socket.emit('ferret', 'tobi', data => {
-            console.log(data)
-        })
-    })*/
-
-    $scope.goToGaleria = galeriaId => {
-        $http.get('/addPhoto')
-            .success( data => {
-                $scope.details = $sce.trustAsHtml(data)
-                console.log(data)
-            })
-    }
-    //Borramos una galeria a través de la api
-    $scope.deleteGaleria = id => {
-        $http.delete('/api/galerias/' + id)
-            .success( data => {
-                $scope.galerias = data
-                console.log(data)
-            })
-            .error( data => {
-                console.log('Error : ' + data)
-            })
-    }
-}
     </script>
 </body>
 </html>
